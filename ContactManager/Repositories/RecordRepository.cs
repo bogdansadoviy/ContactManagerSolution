@@ -8,38 +8,38 @@ namespace ContactManager.Repositories
 {
     public class RecordRepository
     {
-        private ApplicationContext db;
+        private ApplicationContext _dbContext;
         public RecordRepository(ApplicationContext context)
         {
-            db = context;
+            _dbContext = context;
         }
 
         public List<Record> GetAll()
         {
-            return db.Records.ToList();
+            return _dbContext.Records.ToList();
         }
 
         public async Task AddRecords(List<Record> records)
         {
-            await db.Records.AddRangeAsync(records);
-            await db.SaveChangesAsync();
+            await _dbContext.Records.AddRangeAsync(records);
+            await _dbContext.SaveChangesAsync();
         }
         public async Task RemoveById(int id)
         {
-            var record = db.Records.FirstOrDefault(_ => _.Id == id);
-            db.Records.Remove(record);
-            await db.SaveChangesAsync();
+            var record = _dbContext.Records.FirstOrDefault(_ => _.Id == id);
+            _dbContext.Records.Remove(record);
+            await _dbContext.SaveChangesAsync();
         }
 
         public Record GetById(int id)
         {
-            return db.Records.FirstOrDefault(_ => _.Id == id);
+            return _dbContext.Records.FirstOrDefault(_ => _.Id == id);
         }
 
         public void Update(Record record)
         {
-            db.Records.Update(record);
-            db.SaveChanges();
+            _dbContext.Records.Update(record);
+            _dbContext.SaveChanges();
         }
     }
 }

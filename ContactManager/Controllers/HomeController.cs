@@ -18,13 +18,18 @@ namespace ContactManager.Controllers
         private readonly CsvReaderService _csvReader;
         private readonly ImportRecordService _importRecordService;
         private readonly RecordRepository _recordRepository;
-        public HomeController(IWebHostEnvironment environment, CsvReaderService csvReader, ImportRecordService importRecordService, RecordRepository recordRepository)
+        public HomeController(IWebHostEnvironment environment,
+            ImportRecordService importRecordService,
+            RecordRepository recordRepository,
+            CsvReaderService csvReader)
         {
             _environment = environment;
             _csvReader = csvReader;
             _importRecordService = importRecordService;
             _recordRepository = recordRepository;
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
             var records = _recordRepository.GetAll();
@@ -37,15 +42,17 @@ namespace ContactManager.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _recordRepository.RemoveById(id);
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, RecordModel recordModel)
+        public IActionResult Edit(int id, RecordModel recordModel)
         {
             var record = Record.ToRecord(recordModel);
             record.Id = recordModel.Id;
             _recordRepository.Update(record);
+
             return RedirectToAction("Index");
         }
 
@@ -53,6 +60,7 @@ namespace ContactManager.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var record = _recordRepository.GetById(id);
+
             return View(record.ToRecordModel());
         }
 
@@ -80,10 +88,11 @@ namespace ContactManager.Controllers
 
             string fileName = Path.GetFileName(postedFile.FileName);
             string filePath = Path.Combine(path, fileName);
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 postedFile.CopyTo(stream);
             }
+
             return filePath;
         }
     }

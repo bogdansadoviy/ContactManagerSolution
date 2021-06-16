@@ -1,47 +1,56 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@using System.Data;
 @model IEnumerable<ContactManager.Models.RecordModel>
 @{
     ViewData["Index"] = "Index";
 }
 
-<body>
-    <h3>Upload CSV</h3>
-    <form asp-controller="Home" asp-action="Index" method="post" enctype="multipart/form-data">
-        <input type="file" name="postedFile" />
-        <input class="btn btn-success" type="submit" value="Import" />
-    </form>
-    @if (Model != null)
-    {
-        <hr />
-        <h3>Records:</h3>
-        <table id="demo" class="table table-bordered table-hover table-condensed">
+<h3>Upload CSV</h3>
+<form asp-controller="Home" asp-action="Index" method="post" enctype="multipart/form-data">
+    <input type="file" name="postedFile" />
+    <input class="btn btn-success" type="submit" value="Import" />
+</form>
+@if (Model != null)
+{
+    <hr />
+    <h3>Records:</h3>
+    <table id="ContactsTable"
+           class="table table-bordered table-hover table-condensed"
+           data-filter-control="true"
+           data-show-multi-sort-button="false"
+           data-show-search-clear-button="true">
+        <thead>
             <tr class="header">
-                <th>Name</th>
-                <th>Date of birth</th>
-                <th>Married</th>
-                <th>Phone</th>
-                <th>Salary</th>
+                <th data-field="name" data-filter-control="input" data-sortable="true">Name</th>
+                <th data-field="dateofbirth" data-filter-control="datepicker" data-sortable="true">Date of birth</th>
+                <th data-field="married" data-filter-control="select" data-sortable="true">Married</th>
+                <th data-field="phone" data-filter-control="input" data-sortable="true">Phone</th>
+                <th data-field="salary" data-filter-control="input" data-sortable="true">Salary</th>
                 <th>Option</th>
             </tr>
-            <tbody>
-                @foreach (var record in Model)
-                {
-                    <tr>
-                        <td>@record.Name</td>
-                        <td>@record.DateOfBirth.ToString("MM/dd/yyyy")</td>
-                        <td>@record.Married</td>
-                        <td>@record.Phone</td>
-                        <td>@record.Salary</td>
+        </thead>
+        <tbody>
+            @foreach (var record in Model)
+            {
+                <tr>
+                    <td>@record.Name</td>
+                    <td>@record.DateOfBirth.ToString("MM/dd/yyyy")</td>
+                    <td>@record.Married</td>
+                    <td>@record.Phone</td>
+                    <td>@record.Salary</td>
 
-                        <td>
-                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@record.Id">Edit</a>
-                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@record.Id">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</body>
+                    <td>
+                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@record.Id">Edit</a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@record.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
+
+<script>
+    $(function () {
+        $('#ContactsTable').bootstrapTable()
+    })
+</script>
